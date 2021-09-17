@@ -6,16 +6,9 @@ variable "region" {
   description = "region"
 }
 
-#variable "gcp_credentials" {
-#  type        = string
-#  sensitive   = true
-#  description = "Google Cloud service account credentials"
-#}
-
 provider "google" {
   project = var.project_id
   region  = var.region
-  #  credentials = "var.gcp_credentials"
 }
 
 # VPC

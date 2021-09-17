@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-web-deployment-autoscaling
+  labels:
+    env: production
+    app: main
+    tier: frontend
+    owner: own
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      project: kgb
+
+  template:
+    metadata:
+      labels:
+        project: kgb
+    spec:
+      containers:
+        - name: kgb-web
+          image: adv4000/k8sphp:latest
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-autoscaling
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v2beta2v1
+    kind: Deployment
+    name: my-web-deployment-autoscaling
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
